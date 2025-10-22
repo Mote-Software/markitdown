@@ -1,15 +1,19 @@
 {
-  "name": "@motesoftware/markitdown-binary-win32-x64",
-  "version": "0.0.0-development",
-  "description": "markitdown binary for Windows x64",
-  "os": ["win32"],
-  "cpu": ["x64"],
-  "files": [
-    "bin/markitdown.exe"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/motesoftware/markitdown-binaries.git"
-  },
-  "license": "MIT"
+	"name": "@mote-software/markitdown-binary-win32-x64",
+	"version": "0.0.0-development",
+	"description": "markitdown binary for Windows x64",
+	"os": [
+		"win32"
+	],
+	"cpu": [
+		"x64"
+	],
+	"files": [
+		"bin/markitdown.exe"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/mote-software/markitdown-binaries.git"
+	},
+	"license": "MIT"
 }

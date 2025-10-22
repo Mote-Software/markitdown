@@ -3,10 +3,10 @@ const { execFileSync } = require("child_process");
 
 // Lookup table for all platforms and binary distribution packages
 const BINARY_DISTRIBUTION_PACKAGES = {
-	"darwin-x64": "@motesoftware/markitdown-binary-darwin-x64",
-	"darwin-arm64": "@motesoftware/markitdown-binary-darwin-arm64",
-	"linux-x64": "@motesoftware/markitdown-binary-linux-x64",
-	"win32-x64": "@motesoftware/markitdown-binary-win32-x64",
+	"darwin-x64": "@mote-software/markitdown-binary-darwin-x64",
+	"darwin-arm64": "@mote-software/markitdown-binary-darwin-arm64",
+	"linux-x64": "@mote-software/markitdown-binary-linux-x64",
+	"win32-x64": "@mote-software/markitdown-binary-win32-x64",
 };
 
 /**

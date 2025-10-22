@@ -1,44 +1,44 @@
 {
-  "name": "@motesoftware/markitdown",
-  "version": "0.0.0-development",
-  "description": "Convert various file formats to Markdown",
-  "main": "index.js",
-  "bin": {
-    "markitdown": "bin/cli"
-  },
-  "scripts": {
-    "postinstall": "node ./install.js"
-  },
-  "files": [
-    "index.js",
-    "install.js",
-    "bin/cli",
-    "README.md"
-  ],
-  "keywords": [
-    "markdown",
-    "converter",
-    "pdf",
-    "docx",
-    "html",
-    "image",
-    "audio",
-    "cli"
-  ],
-  "author": "Mote Software",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/motesoftware/markitdown-binaries.git",
-    "directory": "packages/markitdown"
-  },
-  "optionalDependencies": {
-    "@motesoftware/markitdown-binary-darwin-x64": "0.0.0-development",
-    "@motesoftware/markitdown-binary-darwin-arm64": "0.0.0-development",
-    "@motesoftware/markitdown-binary-linux-x64": "0.0.0-development",
-    "@motesoftware/markitdown-binary-win32-x64": "0.0.0-development"
-  },
-  "engines": {
-    "node": ">=14.0.0"
-  }
+	"name": "@mote-software/markitdown",
+	"version": "0.0.0-development",
+	"description": "Convert various file formats to Markdown",
+	"main": "index.js",
+	"bin": {
+		"markitdown": "bin/cli"
+	},
+	"scripts": {
+		"postinstall": "node ./install.js"
+	},
+	"files": [
+		"index.js",
+		"install.js",
+		"bin/cli",
+		"README.md"
+	],
+	"keywords": [
+		"markdown",
+		"converter",
+		"pdf",
+		"docx",
+		"html",
+		"image",
+		"audio",
+		"cli"
+	],
+	"author": "Mote Software",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/mote-software/markitdown-binaries.git",
+		"directory": "packages/markitdown"
+	},
+	"optionalDependencies": {
+		"@mote-software/markitdown-binary-darwin-x64": "0.0.0-development",
+		"@mote-software/markitdown-binary-darwin-arm64": "0.0.0-development",
+		"@mote-software/markitdown-binary-linux-x64": "0.0.0-development",
+		"@mote-software/markitdown-binary-win32-x64": "0.0.0-development"
+	},
+	"engines": {
+		"node": ">=14.0.0"
+	}
 }

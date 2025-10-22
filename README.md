@@ -4,7 +4,7 @@ Standalone NPM package for [Markitdown](https://github.com/microsoft/markitdown)
 
 This repository builds and distributes markitdown as:
 - **Standalone binaries** for Windows, macOS, and Linux
-- **npm package** (`@motesoftware/markitdown`) with platform-specific binaries
+- **npm package** (`@mote-software/markitdown`) with platform-specific binaries
 
 _Intended for Node JS use - web is not supported, though could be explored._
 
@@ -14,10 +14,10 @@ _Intended for Node JS use - web is not supported, though could be explored._
 
 ```bash
 # Install globally
-npm install -g @motesoftware/markitdown
+npm install -g @mote-software/markitdown
 
 # Or use with npx
-npx @motesoftware/markitdown input.pdf > output.md
+npx @mote-software/markitdown input.pdf > output.md
 ```
 
 ### Download Binary
@@ -26,7 +26,7 @@ npx @motesoftware/markitdown input.pdf > output.md
 - **Linux**: x64
 - **Windows**: x64
 
-Download pre-built binaries from the [Releases](https://github.com/motesoftware/markitdown-binaries/releases) page.
+Download pre-built binaries from the [Releases](https://github.com/mote-software/markitdown-binaries/releases) page.
 
 ## Usage
 
@@ -42,7 +42,7 @@ markitdown presentation.pptx > output.md
 ### Programmatic API (Node.js)
 
 ```javascript
-const { getBinaryPath, runMarkitdown } = require('@motesoftware/markitdown')
+const { getBinaryPath, runMarkitdown } = require('@mote-software/markitdown')
 
 // Run markitdown and get output
 const markdown = runMarkitdown('input.pdf')

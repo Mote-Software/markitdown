@@ -1,17 +1,17 @@
-# @motesoftware/markitdown
+# @mote-software/markitdown
 
 Convert various file formats to Markdown with ease.
 
 ## Installation
 
 ```bash
-npm install @motesoftware/markitdown
+npm install @mote-software/markitdown
 ```
 
 Or with pnpm:
 
 ```bash
-pnpm add @motesoftware/markitdown
+pnpm add @mote-software/markitdown
 ```
 
 ## Usage
@@ -23,13 +23,13 @@ pnpm add @motesoftware/markitdown
 markitdown input.pdf > output.md
 
 # Or use npx without installing
-npx @motesoftware/markitdown input.docx > output.md
+npx @mote-software/markitdown input.docx > output.md
 ```
 
 ### Programmatic API
 
 ```javascript
-const { runMarkitdown, getBinaryPath } = require('@motesoftware/markitdown')
+const { runMarkitdown, getBinaryPath } = require('@mote-software/markitdown')
 
 // Run markitdown and get output
 const markdown = runMarkitdown('input.pdf')

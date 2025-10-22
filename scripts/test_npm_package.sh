@@ -68,8 +68,8 @@ ARCH=$(node -e "console.log(process.arch)")
 PLATFORM_PKG="../markitdown-binary-${PLATFORM}-${ARCH}"
 
 if [ -d "$PLATFORM_PKG" ]; then
-    mkdir -p node_modules/@motesoftware
-    ln -sf "$ROOT_DIR/packages/markitdown-binary-${PLATFORM}-${ARCH}" "node_modules/@motesoftware/markitdown-binary-${PLATFORM}-${ARCH}"
+    mkdir -p node_modules/@mote-software
+    ln -sf "$ROOT_DIR/packages/markitdown-binary-${PLATFORM}-${ARCH}" "node_modules/@mote-software/markitdown-binary-${PLATFORM}-${ARCH}"
     echo "   ✓ Linked $PLATFORM_PKG"
 else
     echo "   ⚠ Platform package $PLATFORM_PKG not found (this is okay for testing)"
@@ -144,9 +144,9 @@ echo "  markitdown <file>"
 echo
 echo "To unlink when done:"
 if command -v pnpm &> /dev/null; then
-    echo "  pnpm unlink --global @motesoftware/markitdown"
+    echo "  pnpm unlink --global @mote-software/markitdown"
 else
-    echo "  npm unlink -g @motesoftware/markitdown"
+    echo "  npm unlink -g @mote-software/markitdown"
 fi
 echo
 echo "For more detailed testing, see: LOCAL_TEST.md"

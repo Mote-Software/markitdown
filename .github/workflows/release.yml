@@ -158,10 +158,10 @@ jobs:
 
           # Update optionalDependencies in main package
           jq --arg v "$VERSION" '
-            .optionalDependencies["@motesoftware/markitdown-binary-darwin-x64"] = $v |
-            .optionalDependencies["@motesoftware/markitdown-binary-darwin-arm64"] = $v |
-            .optionalDependencies["@motesoftware/markitdown-binary-linux-x64"] = $v |
-            .optionalDependencies["@motesoftware/markitdown-binary-win32-x64"] = $v
+            .optionalDependencies["@mote-software/markitdown-binary-darwin-x64"] = $v |
+            .optionalDependencies["@mote-software/markitdown-binary-darwin-arm64"] = $v |
+            .optionalDependencies["@mote-software/markitdown-binary-linux-x64"] = $v |
+            .optionalDependencies["@mote-software/markitdown-binary-win32-x64"] = $v
           ' packages/markitdown/package.json > packages/markitdown/package.json.tmp
           mv packages/markitdown/package.json.tmp packages/markitdown/package.json
 

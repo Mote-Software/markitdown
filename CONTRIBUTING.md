@@ -1,4 +1,4 @@
-# Contributing to @motesoftware/markitdown
+# Contributing to @mote-software/markitdown
 
 Contributions are very welcome.
 
@@ -39,7 +39,7 @@ packages/
 ```
 
 **How it works:**
-- User installs `@motesoftware/markitdown`
+- User installs `@mote-software/markitdown`
 - npm tries to install the correct `optionalDependency` for their platform
 - If that fails, the postinstall script downloads the binary from npm
 - Result: User gets the right binary automatically
@@ -72,7 +72,7 @@ pnpm link --global
 markitdown README.md
 
 # Test Lib
-node -e "console.log(require('@motesoftware/markitdown').getBinaryPath())"
+node -e "console.log(require('@mote-software/markitdown').getBinaryPath())"
 
 # Cleanup
 pnpm unlink --global
@@ -127,7 +127,7 @@ Releases are **automated** via GitHub Actions and will be run when a PR is accep
 
 - **Actions**: Check workflow runs in Actions tab
 - **Releases**: View GitHub Releases tab
-- **npm**: Visit [npmjs.com/package/@motesoftware/markitdown](https://www.npmjs.com/package/@motesoftware/markitdown)
+- **npm**: Visit [npmjs.com/package/@mote-software/markitdown](https://www.npmjs.com/package/@mote-software/markitdown)
 - **Changelog**: See CHANGELOG.md (auto-generated)
 
 ## Troubleshooting
