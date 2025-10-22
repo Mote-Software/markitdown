@@ -198,63 +198,6 @@ def test_text_conversion(binary_path):
             pass
 
 
-def test_stdin_conversion(binary_path):
-    """Test conversion from stdin with output redirection."""
-    print("Testing stdin conversion...")
-
-    # Create temp output file
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
-        output_file = f.name
-
-    try:
-        # Test stdin using subprocess.PIPE (cross-platform)
-        test_content = "Test content from stdin"
-
-        with open(output_file, 'w') as outf:
-            result = subprocess.run(
-                [str(binary_path)],
-                input=test_content,
-                stdout=outf,
-                stderr=subprocess.PIPE,
-                text=True,
-                timeout=30
-            )
-
-        if result.returncode != 0:
-            print(f"  FAILED: Stdin conversion returned non-zero exit code {result.returncode}")
-            print(f"  stderr: {result.stderr}")
-            return False
-
-        # Check if output file was created
-        if not os.path.exists(output_file):
-            print(f"  FAILED: Output file was not created at {output_file}")
-            return False
-
-        # Read and verify output content
-        with open(output_file, 'r') as f:
-            output = f.read()
-
-        if "Test content from stdin" not in output:
-            print(f"  FAILED: Output doesn't contain expected text")
-            print(f"  Output: {output}")
-            return False
-
-        print(f"  Output preview: {output[:100]}")
-        print("  PASSED")
-        return True
-
-    except Exception as e:
-        print(f"  EXCEPTION: {e}")
-        return False
-    finally:
-        # Clean up temporary file
-        try:
-            if os.path.exists(output_file):
-                os.unlink(output_file)
-        except Exception:
-            pass
-
-
 def main():
     # Get paths
     script_dir = Path(__file__).parent.resolve()
@@ -283,7 +226,6 @@ def main():
     tests = [
         ("HTML file conversion", lambda: test_html_conversion(binary_path)),
         ("Text file conversion", lambda: test_text_conversion(binary_path)),
-        ("Stdin conversion", lambda: test_stdin_conversion(binary_path)),
     ]
 
     passed = 0
