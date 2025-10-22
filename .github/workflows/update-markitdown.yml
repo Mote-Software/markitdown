@@ -1,0 +1,116 @@
+name: Update markitdown submodule
+
+on:
+  schedule:
+    # Run daily at 00:00 UTC
+    - cron: "0 0 * * *"
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  update-submodule:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Get latest markitdown release
+        id: latest-release
+        run: |
+          LATEST_TAG=$(curl -s https://api.github.com/repos/microsoft/markitdown/releases/latest | jq -r .tag_name)
+          echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+          echo "Latest markitdown release: $LATEST_TAG"
+
+      - name: Get current submodule version
+        id: current-version
+        run: |
+          cd markitdown
+          CURRENT_COMMIT=$(git rev-parse HEAD)
+          # Try to get the tag for current commit
+          CURRENT_TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
+          echo "commit=$CURRENT_COMMIT" >> $GITHUB_OUTPUT
+          echo "tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
+          echo "Current submodule commit: $CURRENT_COMMIT"
+          echo "Current submodule tag: $CURRENT_TAG"
+
+      - name: Check if update is needed
+        id: check-update
+        run: |
+          LATEST_TAG="${{ steps.latest-release.outputs.tag }}"
+          CURRENT_TAG="${{ steps.current-version.outputs.tag }}"
+
+          if [ "$LATEST_TAG" != "$CURRENT_TAG" ]; then
+            echo "update_needed=true" >> $GITHUB_OUTPUT
+            echo "Update needed: $CURRENT_TAG -> $LATEST_TAG"
+          else
+            echo "update_needed=false" >> $GITHUB_OUTPUT
+            echo "Already up to date at $LATEST_TAG"
+          fi
+
+      - name: Update submodule to latest release
+        if: steps.check-update.outputs.update_needed == 'true'
+        run: |
+          LATEST_TAG="${{ steps.latest-release.outputs.tag }}"
+
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Update submodule to the latest release tag
+          cd markitdown
+          git fetch --tags origin
+          git checkout "$LATEST_TAG"
+          cd ..
+
+          # Stage the submodule change
+          git add markitdown
+
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+      - name: Create Pull Request
+        if: steps.check-update.outputs.update_needed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LATEST_TAG="${{ steps.latest-release.outputs.tag }}"
+          CURRENT_TAG="${{ steps.current-version.outputs.tag }}"
+          BRANCH_NAME="update-markitdown-${LATEST_TAG}"
+
+          # Create and checkout new branch
+          git checkout -b "$BRANCH_NAME"
+
+          # Commit the changes
+          git commit -m "chore: update markitdown submodule to ${LATEST_TAG}
+
+          This automated PR updates the markitdown submodule from ${CURRENT_TAG} to ${LATEST_TAG}.
+
+          Release notes: https://github.com/microsoft/markitdown/releases/tag/${LATEST_TAG}"
+
+          # Push the branch
+          git push origin "$BRANCH_NAME"
+
+          # Create PR using gh CLI
+          gh pr create \
+            --title "chore: update markitdown submodule to ${LATEST_TAG}" \
+            --body "This automated PR updates the markitdown submodule to the latest release.
+
+            **Changes:**
+            - Update markitdown from \`${CURRENT_TAG}\` to \`${LATEST_TAG}\`
+
+            **Release Notes:**
+            https://github.com/microsoft/markitdown/releases/tag/${LATEST_TAG}
+
+            ---
+            *This PR was automatically created by the update-markitdown workflow.*" \
+            --head "$BRANCH_NAME" \
+            --base main
