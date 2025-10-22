@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+const { execFileSync } = require('child_process')
+const { getBinaryPath } = require('../index')
+
+try {
+  execFileSync(getBinaryPath(), process.argv.slice(2), {
+    stdio: 'inherit',
+  })
+} catch (error) {
+  process.exit(error.status || 1)
+}

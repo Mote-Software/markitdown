@@ -1,0 +1,194 @@
+name: Release
+
+on:
+  # push:
+  #   branches:
+  #     - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  build-binaries:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux
+            arch: x64
+          - os: macos-13 # Intel Mac
+            platform: darwin
+            arch: x64
+          - os: macos-latest # Apple Silicon Mac
+            platform: darwin
+            arch: arm64
+          - os: windows-latest
+            platform: win32
+            arch: x64
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          chmod +x scripts/install_deps.sh
+          ./scripts/install_deps.sh
+
+      - name: Install dependencies (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          python -m venv venv
+          source venv/Scripts/activate
+          python -m pip install --upgrade pip
+          pip install -e "./markitdown/packages/markitdown[all]"
+          pip install -r requirements-build.txt
+
+      - name: Build binary (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          source venv/bin/activate
+          python scripts/build.py
+
+      - name: Build binary (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          source venv/Scripts/activate
+          python scripts/build.py
+
+      - name: Copy binary to npm package (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          chmod +x scripts/copy_binaries_to_packages.sh
+          ./scripts/copy_binaries_to_packages.sh
+
+      - name: Copy binary to npm package (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          bash scripts/copy_binaries_to_packages.sh
+
+      - name: Upload binary package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: binary-${{ matrix.platform }}-${{ matrix.arch }}
+          path: packages/markitdown-binary-${{ matrix.platform }}-${{ matrix.arch }}/
+          retention-days: 1
+
+  release:
+    name: Release
+    needs: build-binaries
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Download all binary artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Copy binaries to package directories
+        run: |
+          for artifact in artifacts/binary-*; do
+            PLATFORM_ARCH=$(basename "$artifact" | sed 's/binary-//')
+            PKG_DIR="packages/markitdown-binary-${PLATFORM_ARCH}"
+            echo "Copying $artifact to $PKG_DIR"
+            if [ -d "$artifact" ]; then
+              cp -r "$artifact"/* "$PKG_DIR/" || true
+            fi
+          done
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Semantic Release
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Get version from package.json
+        id: version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Published version: $VERSION"
+
+      - name: Update package versions
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+
+          # Update all package.json files to match root version
+          for pkg in packages/*/package.json; do
+            echo "Updating $pkg to version $VERSION"
+            jq --arg v "$VERSION" '.version = $v' "$pkg" > "$pkg.tmp" && mv "$pkg.tmp" "$pkg"
+          done
+
+          # Update optionalDependencies in main package
+          jq --arg v "$VERSION" '
+            .optionalDependencies["@motesoftware/markitdown-binary-darwin-x64"] = $v |
+            .optionalDependencies["@motesoftware/markitdown-binary-darwin-arm64"] = $v |
+            .optionalDependencies["@motesoftware/markitdown-binary-linux-x64"] = $v |
+            .optionalDependencies["@motesoftware/markitdown-binary-win32-x64"] = $v
+          ' packages/markitdown/package.json > packages/markitdown/package.json.tmp
+          mv packages/markitdown/package.json.tmp packages/markitdown/package.json
+
+      - name: Publish platform-specific packages
+        run: |
+          for pkg in packages/markitdown-binary-*; do
+            if [ -d "$pkg" ]; then
+              echo "Publishing $(basename $pkg)..."
+              cd "$pkg"
+
+              # Check if binary exists
+              if [ -f "bin/markitdown" ] || [ -f "bin/markitdown.exe" ]; then
+                pnpm publish --access public --no-git-checks || echo "Failed to publish $(basename $pkg)"
+              else
+                echo "Warning: Binary not found in $pkg, skipping..."
+              fi
+
+              cd ../..
+            fi
+          done
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish main package
+        run: |
+          cd packages/markitdown
+          pnpm publish --access public --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

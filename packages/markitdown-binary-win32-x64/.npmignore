@@ -1,0 +1,5 @@
+# Only include the binary
+*
+!bin/
+!bin/markitdown.exe
+!package.json

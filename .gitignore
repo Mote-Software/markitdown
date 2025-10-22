@@ -1,5 +1,6 @@
 # Build outputs
-bin/
+**/bin/*
+!packages/**/bin/cli
 build/dist/
 build/build/
 
@@ -36,3 +37,12 @@ htmlcov/
 
 # Logs
 *.log
+
+# Node / NPM
+node_modules/
+package-lock.json
+pnpm-lock.yaml
+*.tgz
+.npmrc
+packages/*/bin/markitdown
+packages/*/bin/markitdown.exe
