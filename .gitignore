@@ -2,7 +2,6 @@
 bin/
 build/dist/
 build/build/
-*.spec
 
 # Python
 *.pyc
