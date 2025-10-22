@@ -207,17 +207,18 @@ def test_stdin_conversion(binary_path):
         output_file = f.name
 
     try:
-        # Test stdin by piping echo to the binary
+        # Test stdin using subprocess.PIPE (cross-platform)
         test_content = "Test content from stdin"
-        cmd = f'echo "{test_content}" | {binary_path} > {output_file}'
 
-        result = subprocess.run(
-            cmd,
-            shell=True,
-            capture_output=True,
-            text=True,
-            timeout=30
-        )
+        with open(output_file, 'w') as outf:
+            result = subprocess.run(
+                [str(binary_path)],
+                input=test_content,
+                stdout=outf,
+                stderr=subprocess.PIPE,
+                text=True,
+                timeout=30
+            )
 
         if result.returncode != 0:
             print(f"  FAILED: Stdin conversion returned non-zero exit code {result.returncode}")
