@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/mote-software/markitdown-binaries/compare/v1.0.1...v1.1.0) (2025-10-23)
+
+
+### Features
+
+* add postinstall scripts to set executable permissions for binaries ([9c0f926](https://github.com/mote-software/markitdown-binaries/commit/9c0f926479b5195818cfa8aa2014a5e24ea2df13))
+
 ## [1.0.1](https://github.com/mote-software/markitdown-binaries/compare/v1.0.0...v1.0.1) (2025-10-23)
 
 
