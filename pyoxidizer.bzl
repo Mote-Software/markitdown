@@ -46,10 +46,10 @@ def make_exe():
         if resource.is_stdlib:
             exe.add_python_resource(resource)
 
-    # Add markitdown package from the submodule
-    exe.add_python_resources(exe.pip_install([
-        "./markitdown/packages/markitdown[all]"
-    ]))
+    # Install markitdown package and all its dependencies
+    # Note: markitdown should be pre-installed in the environment
+    for resource in exe.pip_install(["markitdown"]):
+        exe.add_python_resource(resource)
 
     return exe
 

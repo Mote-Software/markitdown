@@ -30,6 +30,11 @@ jobs:
       - name: Display Python version
         run: python --version
 
+      - name: Install markitdown package
+        run: |
+          python -m pip install --upgrade pip
+          pip install ./markitdown/packages/markitdown[all]
+
       - name: Build with PyOxidizer
         run: |
           pyoxidizer build --release
