@@ -84,11 +84,17 @@ function extractFileFromTarball(tarballBuffer, filepath) {
 }
 
 async function downloadBinaryFromNpm() {
-	console.log(`Downloading binary for ${process.platform}-${process.arch}...`);
+	// URL encode the package name for npm registry (@ becomes %40)
+	const encodedPackageName = platformSpecificPackageName.replace("@", "%40");
+	const packageNameWithoutScope = platformSpecificPackageName.replace("@mote-software/", "");
+
+	console.log(
+		`Downloading binary for ${process.platform}-${process.arch}... (https://registry.npmjs.org/${encodedPackageName}/-/${packageNameWithoutScope}-${BINARY_DISTRIBUTION_VERSION}.tgz)`,
+	);
 
 	// Download the tarball of the right binary distribution package
 	const tarballDownloadBuffer = await makeRequest(
-		`https://registry.npmjs.org/${platformSpecificPackageName}/-/${platformSpecificPackageName.replace("@mote-software/", "")}-${BINARY_DISTRIBUTION_VERSION}.tgz`,
+		`https://registry.npmjs.org/${encodedPackageName}/-/${packageNameWithoutScope}-${BINARY_DISTRIBUTION_VERSION}.tgz`,
 	);
 
 	const tarballBuffer = zlib.unzipSync(tarballDownloadBuffer);
