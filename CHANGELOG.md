@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/Mote-Software/markitdown/compare/v1.1.0...v1.2.0) (2025-10-23)
+
+
+### Features
+
+* update repository URLs ([8d1b62e](https://github.com/Mote-Software/markitdown/commit/8d1b62e6d83c2e2b97ba82d15d2b737eba15dda6))
+
 # [1.1.0](https://github.com/Mote-Software/markitdown/compare/v1.0.1...v1.1.0) (2025-10-23)
 
 
