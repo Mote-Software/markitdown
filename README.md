@@ -13,11 +13,10 @@ _Intended for Node JS use - web is not supported, though could be explored._
 ### npm Installation
 
 ```bash
-# Install globally
-npm install -g @mote-software/markitdown
-
-# Or use with npx
-npx @mote-software/markitdown input.pdf > output.md
+# Install
+npm install @mote-software/markitdown
+pnpm install @mote-software/markitdown
+yarn add @mote-software/markitdown
 ```
 
 ### Download Binary
@@ -29,15 +28,6 @@ npx @mote-software/markitdown input.pdf > output.md
 Download pre-built binaries from the [Releases](https://github.com/Mote-Software/markitdown/releases) page.
 
 ## Usage
-
-### Command Line
-
-```bash
-# Convert a file to markdown
-markitdown input.pdf > output.md
-markitdown document.docx > output.md
-markitdown presentation.pptx > output.md
-```
 
 ### Programmatic API (Node.js)
 
