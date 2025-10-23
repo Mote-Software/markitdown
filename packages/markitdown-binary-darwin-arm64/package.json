@@ -8,8 +8,12 @@
 	"cpu": [
 		"arm64"
 	],
+	"scripts": {
+		"postinstall": "node postinstall.js"
+	},
 	"files": [
-		"bin/markitdown"
+		"bin/markitdown",
+		"postinstall.js"
 	],
 	"repository": {
 		"type": "git",
