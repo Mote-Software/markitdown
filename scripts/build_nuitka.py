@@ -80,43 +80,31 @@ def main():
         "-m", "nuitka",
         "--standalone",
         "--onefile",
-        # Follow imports for markitdown and its dependencies
-        "--follow-imports",
-        # Include data files
-        "--include-package=markitdown",
-        "--include-package=magika",
-        "--include-package=onnxruntime",
+        # Follow imports only for markitdown package specifically
+        "--follow-import-to=markitdown",
+        # Include data files for packages that need them
         "--include-package-data=magika",
         "--include-package-data=onnxruntime",
-        # Include commonly needed packages
-        "--include-package=bs4",
-        "--include-package=requests",
-        "--include-package=markdownify",
-        "--include-package=charset_normalizer",
-        "--include-package=defusedxml",
-        # Optional dependencies
+        # Don't follow imports to test modules
         "--nofollow-import-to=*.tests",
         "--nofollow-import-to=*.test",
+        # Progress and download options
+        "--show-progress",
+        "--assume-yes-for-downloads",
         # Output configuration
         "--output-dir=" + str(nuitka_build_dir),
-        # Enable optimizations
-        "--lto=yes",
-        # Disable console window on Windows (can be changed if needed)
-        # "--disable-console",  # Commented out to keep console for debugging
+        # Disable LTO to speed up compilation (can be enabled later for production)
+        "--lto=no",
         str(entry_point)
     ]
 
     # Add platform-specific options
     if plat == "darwin":
-        # macOS specific options
-        cmd.extend([
-            "--macos-create-app-bundle",
-        ])
+        # macOS specific options - no app bundle needed for CLI tool
+        pass
     elif plat == "linux":
-        # Linux specific options - enable static libpython
-        cmd.extend([
-            # These can help with compatibility
-        ])
+        # Linux specific options
+        pass
     elif plat == "win32":
         # Windows specific options
         pass
