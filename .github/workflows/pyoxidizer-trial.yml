@@ -1,0 +1,78 @@
+name: PyOxidizer Trial (Linux)
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-with-pyoxidizer:
+    name: Build with PyOxidizer (Linux)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install PyOxidizer
+        run: |
+          curl -sSL https://github.com/indygreg/PyOxidizer/releases/download/pyoxidizer%2F0.24.0/pyoxidizer-0.24.0-x86_64-unknown-linux-musl.tar.gz | tar xzf -
+          sudo mv pyoxidizer*/pyoxidizer /usr/local/bin/
+          pyoxidizer --version
+
+      - name: Display Python version
+        run: python --version
+
+      - name: Build with PyOxidizer
+        run: |
+          pyoxidizer build --release
+
+      - name: Find and copy binary
+        run: |
+          mkdir -p bin/linux
+          find build -name "markitdown" -type f -executable -exec cp {} bin/linux/ \;
+          ls -lh bin/linux/
+          chmod +x bin/linux/markitdown
+
+      - name: Test binary with test.html
+        run: |
+          ./bin/linux/markitdown test.html > test.md
+          echo "=== Generated Markdown ==="
+          cat test.md
+          echo ""
+          echo "=== Verification ==="
+          if [ -f test.md ] && [ -s test.md ]; then
+            echo "✓ test.md was created and is not empty"
+            if grep -q "Test HTML Document" test.md; then
+              echo "✓ Conversion successful - content found in output"
+              exit 0
+            else
+              echo "✗ Conversion failed - expected content not found"
+              exit 1
+            fi
+          else
+            echo "✗ test.md was not created or is empty"
+            exit 1
+          fi
+
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: markitdown-pyoxidizer-linux
+          path: bin/linux/markitdown
+          retention-days: 30
+
+      - name: Upload test output
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-output
+          path: test.md
+          retention-days: 7
