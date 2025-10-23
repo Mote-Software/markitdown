@@ -191,3 +191,41 @@ jobs:
           pnpm publish --access public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Prepare binaries for release
+        run: |
+          mkdir -p release-binaries
+
+          # Copy and rename binaries with platform-arch suffix
+          if [ -f "packages/markitdown-binary-linux-x64/bin/markitdown" ]; then
+            cp packages/markitdown-binary-linux-x64/bin/markitdown release-binaries/markitdown-linux-x64
+          fi
+
+          if [ -f "packages/markitdown-binary-darwin-x64/bin/markitdown" ]; then
+            cp packages/markitdown-binary-darwin-x64/bin/markitdown release-binaries/markitdown-darwin-x64
+          fi
+
+          if [ -f "packages/markitdown-binary-darwin-arm64/bin/markitdown" ]; then
+            cp packages/markitdown-binary-darwin-arm64/bin/markitdown release-binaries/markitdown-darwin-arm64
+          fi
+
+          if [ -f "packages/markitdown-binary-win32-x64/bin/markitdown.exe" ]; then
+            cp packages/markitdown-binary-win32-x64/bin/markitdown.exe release-binaries/markitdown-win32-x64.exe
+          fi
+
+          # List what we have
+          ls -lah release-binaries/
+
+      - name: Upload binaries to GitHub release
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+
+          # Upload all binaries to the release
+          for binary in release-binaries/*; do
+            if [ -f "$binary" ]; then
+              echo "Uploading $(basename $binary) to release v$VERSION"
+              gh release upload "v$VERSION" "$binary" --clobber
+            fi
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
