@@ -1,4 +1,4 @@
-# Markitdown Binaries
+# Node JS Markitdown
 
 Standalone NPM package for [Markitdown](https://github.com/microsoft/markitdown) - Convert various file formats to Markdown.
 
