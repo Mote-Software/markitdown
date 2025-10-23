@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/mote-software/markitdown-binaries/compare/v1.0.0...v1.0.1) (2025-10-23)
+
+
+### Bug Fixes
+
+* update binary download URL encoding in install script ([319b407](https://github.com/mote-software/markitdown-binaries/commit/319b40724bcccb65b29bda9d4e5834e96c16b975))
+
 # 1.0.0 (2025-10-22)
 
 
