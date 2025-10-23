@@ -11,7 +11,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/mote-software/markitdown-binaries.git"
+		"url": "https://github.com/Mote-Software/markitdown.git"
 	},
 	"devDependencies": {
 		"@semantic-release/changelog": "^6.0.3",

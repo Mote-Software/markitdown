@@ -26,7 +26,7 @@ npx @mote-software/markitdown input.pdf > output.md
 - **Linux**: x64
 - **Windows**: x64
 
-Download pre-built binaries from the [Releases](https://github.com/mote-software/markitdown-binaries/releases) page.
+Download pre-built binaries from the [Releases](https://github.com/Mote-Software/markitdown/releases) page.
 
 ## Usage
 
